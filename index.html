@@ -62,6 +62,7 @@ body::after {
 img {
     width: 200px;
     filter: drop-shadow(0 0 50px rgba(255,255,255,0.12));
+    transition: transform 0.1s ease-out;
 }
 
 .countdown {
@@ -98,20 +99,33 @@ img {
 }
 
 @keyframes tick {
-    from {
-        transform: translateY(4px);
-        opacity: 0.6;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    from { transform: translateY(4px); opacity: 0.6; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 @media (max-width: 600px) {
     .value { font-size: 2.6rem; }
     .unit { min-width: 95px; }
     .hero .date { font-size: 1.9rem; }
+}
+
+/* custom volume bar */
+#volume-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    cursor: pointer;
+}
+#volume-bar {
+    height: 100%;
+    width: 50%;
+    background: #fff;
+    border-radius: 4px;
+    transition: width 0.1s;
 }
 </style>
 </head>
@@ -124,7 +138,7 @@ img {
         <div class="date">JANUARY 30</div>
     </div>
 
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5R4-Tcrz_B60IzMELDlZ5PJIMUaKXE0uQBw&s" alt="">
+    <img id="hero-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5R4-Tcrz_B60IzMELDlZ5PJIMUaKXE0uQBw&s" alt="">
 
     <div class="countdown">
         <div class="unit">
@@ -147,10 +161,15 @@ img {
 
 </div>
 
-<!-- Background music with fade-in and guaranteed autoplay -->
+<!-- Background music -->
 <audio id="bgm" loop>
     <source src="./BULLY.mp3" type="audio/mpeg">
 </audio>
+
+<!-- Custom volume -->
+<div id="volume-container">
+    <div id="volume-bar"></div>
+</div>
 
 <script>
 // Countdown
@@ -188,35 +207,56 @@ function tick() {
 tick();
 setInterval(tick, 1000);
 
-// Audio autoplay with fade-in on first user interaction
+// Audio autoplay
 const audio = document.getElementById("bgm");
-audio.volume = 0;
+audio.volume = 0.5;
 
-function fadeInAudio(duration = 3000) {
-    let step = 0.01;
-    let interval = duration / (1/step);
-    let vol = 0;
-    const fade = setInterval(() => {
-        vol += step;
-        if (vol >= 1) {
-            audio.volume = 1;
-            clearInterval(fade);
-        } else {
-            audio.volume = vol;
-        }
-    }, interval);
+// Volume bar
+const volContainer = document.getElementById("volume-container");
+const volBar = document.getElementById("volume-bar");
+
+volContainer.addEventListener("click", e => {
+    const rect = volContainer.getBoundingClientRect();
+    const perc = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+    audio.volume = perc;
+    volBar.style.width = perc * 100 + "%";
+});
+
+// Audio + visualizer
+const img = document.getElementById("hero-img");
+let audioCtx, analyser, source, dataArray;
+
+function initAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    source = audioCtx.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    analyser.fftSize = 256;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    function animate() {
+        requestAnimationFrame(animate);
+        analyser.getByteFrequencyData(dataArray);
+        // bass is first ~10 bins
+        let bass = 0;
+        for(let i=0; i<10; i++) bass += dataArray[i];
+        bass = bass / 10 / 255; // normalize 0-1
+        // scale image based on bass
+        img.style.transform = `scale(${1 + bass*0.5})`;
+    }
+    animate();
 }
 
-// Start audio on first click or touch
-document.body.addEventListener("click", () => {
+// Start audio and visualizer on first interaction
+function startAudio() {
+    if(audioCtx) return;
     audio.play();
-    fadeInAudio(3000);
-}, { once: true });
+    initAudio();
+}
 
-document.body.addEventListener("touchstart", () => {
-    audio.play();
-    fadeInAudio(3000);
-}, { once: true });
+document.body.addEventListener("click", startAudio, { once: true });
+document.body.addEventListener("touchstart", startAudio, { once: true });
 </script>
 
 </body>
