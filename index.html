@@ -8,125 +8,38 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;800&family=JetBrains+Mono:wght@500&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background: #000;
-    color: #fff;
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    font-family: 'Inter', sans-serif;
-    overflow: hidden;
-}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#000; color:#fff; min-height:100vh; display:grid; place-items:center; font-family:'Inter',sans-serif; overflow:hidden; }
 
 /* subtle grain */
 body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none;
+    content:"";
+    position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events:none;
 }
 
-.container {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 42px;
-}
+.container { text-align:center; display:flex; flex-direction:column; align-items:center; gap:32px; }
 
-.hero {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+.hero { display:flex; flex-direction:column; gap:6px; }
+.hero .ye { font-size:0.85rem; letter-spacing:6px; opacity:0.55; }
+.hero .date { font-size:2.4rem; font-weight:800; letter-spacing:-1px; }
 
-.hero .ye {
-    font-size: 0.85rem;
-    letter-spacing: 6px;
-    opacity: 0.55;
-}
+#release-text { font-size:1.1rem; opacity:0.55; margin-top:-8px; }
 
-.hero .date {
-    font-size: 2.4rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-}
+img { width:200px; filter:drop-shadow(0 0 50px rgba(255,255,255,0.12)); transition: transform 0.08s ease-out; }
 
-img {
-    width: 200px;
-    filter: drop-shadow(0 0 50px rgba(255,255,255,0.12));
-    transition: transform 0.1s ease-out;
-}
+.countdown { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
+.unit { min-width:90px; padding:16px 18px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.03); }
+.value { font-family:'JetBrains Mono',monospace; font-size:2.4rem; font-weight:500; }
+.label { margin-top:6px; font-size:0.65rem; letter-spacing:2.5px; opacity:0.55; }
+.tick { animation: tick 0.22s ease-out; }
+@keyframes tick { from { transform:translateY(4px); opacity:0.6; } to { transform:translateY(0); opacity:1; } }
 
-.countdown {
-    display: flex;
-    gap: 26px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
+#volume-container { position:fixed; bottom:20px; right:20px; width:150px; height:8px; background:rgba(255,255,255,0.2); border-radius:4px; cursor:pointer; }
+#volume-bar { height:100%; width:50%; background:#fff; border-radius:4px; transition:width 0.1s; }
 
-.unit {
-    min-width: 118px;
-    padding: 22px 26px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.03);
-}
-
-.value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 3.4rem;
-    font-weight: 500;
-}
-
-.label {
-    margin-top: 10px;
-    font-size: 0.65rem;
-    letter-spacing: 2.5px;
-    opacity: 0.55;
-}
-
-/* animate ONLY when value changes */
-.tick {
-    animation: tick 0.22s ease-out;
-}
-
-@keyframes tick {
-    from { transform: translateY(4px); opacity: 0.6; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-@media (max-width: 600px) {
-    .value { font-size: 2.6rem; }
-    .unit { min-width: 95px; }
-    .hero .date { font-size: 1.9rem; }
-}
-
-/* custom volume bar */
-#volume-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 150px;
-    height: 8px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 4px;
-    cursor: pointer;
-}
-#volume-bar {
-    height: 100%;
-    width: 50%;
-    background: #fff;
-    border-radius: 4px;
-    transition: width 0.1s;
-}
+@media (max-width:600px) { .value{ font-size:1.8rem; } .unit{ min-width:70px; } .hero .date{ font-size:1.6rem; } #release-text{ font-size:0.95rem; } }
 </style>
 </head>
 
@@ -138,24 +51,26 @@ img {
         <div class="date">JANUARY 30</div>
     </div>
 
+    <div id="release-text">Releases in 0 days, 0 hours, 0 minutes, 0 seconds</div>
+
     <img id="hero-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5R4-Tcrz_B60IzMELDlZ5PJIMUaKXE0uQBw&s" alt="">
 
     <div class="countdown">
         <div class="unit">
             <div class="value" id="days">0</div>
-            <div class="label">DAYS</div>
+            <div class="label">Days</div>
         </div>
         <div class="unit">
             <div class="value" id="hours">00</div>
-            <div class="label">HOURS</div>
+            <div class="label">Hour</div>
         </div>
         <div class="unit">
             <div class="value" id="minutes">00</div>
-            <div class="label">MINUTES</div>
+            <div class="label">Minutes</div>
         </div>
         <div class="unit">
             <div class="value" id="seconds">00</div>
-            <div class="label">SECONDS</div>
+            <div class="label">Seconds</div>
         </div>
     </div>
 
@@ -167,96 +82,106 @@ img {
 </audio>
 
 <!-- Custom volume -->
-<div id="volume-container">
-    <div id="volume-bar"></div>
-</div>
+<div id="volume-container"><div id="volume-bar"></div></div>
 
 <script>
-// Countdown
-function nextJan30() {
+// --- Countdown ---
+const releaseDate = new Date(2026,0,30,0,0,0); // Jan 30, 2026
+const last = {};
+const releaseText = document.getElementById("release-text");
+
+function updateCountdown() {
     const now = new Date();
-    let t = new Date(now.getFullYear(), 0, 30, 0, 0, 0);
-    if (now > t) t.setFullYear(t.getFullYear() + 1);
-    return t;
+    const diff = releaseDate - now;
+
+    if(diff<=0){
+        releaseText.textContent = "Released!";
+        update("days",0); update("hours",0); update("minutes",0); update("seconds",0);
+        return;
+    }
+
+    const days = Math.floor(diff/86400000);
+    const hours = Math.floor(diff/3600000)%24;
+    const minutes = Math.floor(diff/60000)%60;
+    const seconds = Math.floor(diff/1000)%60;
+
+    update("days",days);
+    update("hours",String(hours).padStart(2,"0"));
+    update("minutes",String(minutes).padStart(2,"0"));
+    update("seconds",String(seconds).padStart(2,"0"));
+
+    releaseText.textContent = `Releases in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
 }
 
-const target = nextJan30();
-const last = {};
-
-function update(id, value) {
-    const el = document.getElementById(id);
-    if (last[id] !== value) {
-        el.textContent = value;
+function update(id,value){
+    const el=document.getElementById(id);
+    if(last[id]!==value){
+        el.textContent=value;
         el.classList.remove("tick");
         void el.offsetWidth;
         el.classList.add("tick");
-        last[id] = value;
+        last[id]=value;
     }
 }
 
-function tick() {
-    const d = target - Date.now();
-    if (d <= 0) return;
+updateCountdown();
+setInterval(updateCountdown,1000);
 
-    update("days", Math.floor(d / 86400000));
-    update("hours", String(Math.floor(d / 3600000) % 24).padStart(2,"0"));
-    update("minutes", String(Math.floor(d / 60000) % 60).padStart(2,"0"));
-    update("seconds", String(Math.floor(d / 1000) % 60).padStart(2,"0"));
-}
-
-tick();
-setInterval(tick, 1000);
-
-// Audio autoplay
+// --- Audio + Visualizer ---
 const audio = document.getElementById("bgm");
 audio.volume = 0.5;
 
-// Volume bar
-const volContainer = document.getElementById("volume-container");
-const volBar = document.getElementById("volume-bar");
-
-volContainer.addEventListener("click", e => {
-    const rect = volContainer.getBoundingClientRect();
-    const perc = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
-    audio.volume = perc;
-    volBar.style.width = perc * 100 + "%";
-});
-
-// Audio + visualizer
 const img = document.getElementById("hero-img");
 let audioCtx, analyser, source, dataArray;
 
-function initAudio() {
+function initAudio(){
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
     source = audioCtx.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
-    analyser.fftSize = 256;
+    analyser.fftSize = 512;
     dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-    function animate() {
+    function animate(){
         requestAnimationFrame(animate);
         analyser.getByteFrequencyData(dataArray);
-        // bass is first ~10 bins
+
+        // Bass & loudness
         let bass = 0;
-        for(let i=0; i<10; i++) bass += dataArray[i];
-        bass = bass / 10 / 255; // normalize 0-1
-        // scale image based on bass
-        img.style.transform = `scale(${1 + bass*0.5})`;
+        for(let i=0;i<20;i++) bass+=dataArray[i]; // stronger bass detection
+        bass = bass/20/255;
+
+        let loudness = 0;
+        for(let i=0;i<dataArray.length;i++) loudness+=dataArray[i];
+        loudness = loudness/dataArray.length/255;
+
+        // Combine for strong effect
+        let scale = 1 + bass*0.7 + loudness*0.3;
+        img.style.transform = `scale(${scale})`;
     }
     animate();
 }
 
-// Start audio and visualizer on first interaction
-function startAudio() {
+// --- Volume Bar ---
+const volContainer = document.getElementById("volume-container");
+const volBar = document.getElementById("volume-bar");
+
+volContainer.addEventListener("click", e=>{
+    const rect = volContainer.getBoundingClientRect();
+    const perc = Math.min(Math.max((e.clientX-rect.left)/rect.width,0),1);
+    audio.volume = perc;
+    volBar.style.width = perc*100+"%";
+});
+
+// --- Start audio on first interaction ---
+function startAudio(){
     if(audioCtx) return;
     audio.play();
     initAudio();
 }
-
-document.body.addEventListener("click", startAudio, { once: true });
-document.body.addEventListener("touchstart", startAudio, { once: true });
+document.body.addEventListener("click",startAudio,{once:true});
+document.body.addEventListener("touchstart",startAudio,{once:true});
 </script>
 
 </body>
