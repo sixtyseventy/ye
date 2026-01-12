@@ -3,30 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <title>YE — January 30</title>
+<link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5R4-Tcrz_B60IzMELDlZ5PJIMUaKXE0uQBw&s" type="image/png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;800&family=JetBrains+Mono:wght@500&display=swap');
 
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background:#000; color:#fff; min-height:100vh; display:grid; place-items:center; font-family:'Inter',sans-serif; overflow:hidden; }
+body { background:#000; color:#fff; min-height:100vh; display:grid; place-items:center; font-family:'Inter',sans-serif; overflow:hidden; position:relative; }
 
 body::after {
     content:"";
     position:fixed; inset:0;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
     pointer-events:none;
+    z-index:0;
 }
 
-.container { text-align:center; display:flex; flex-direction:column; align-items:center; gap:32px; }
+/* Background hero image behind everything */
+#hero-img { 
+    position:fixed; top:50%; left:50%; transform:translate(-50%, -50%) scale(1); 
+    filter: drop-shadow(0 0 80px rgba(255,255,255,0.12)); 
+    width:400px; max-width:90%; opacity:0.15; 
+    z-index:0; pointer-events:none; transition: transform 0.05s ease-out;
+}
+
+.container { text-align:center; display:flex; flex-direction:column; align-items:center; gap:32px; position:relative; z-index:1; }
 
 .hero { display:flex; flex-direction:column; gap:6px; }
 .hero .ye { font-size:0.85rem; letter-spacing:6px; opacity:0.55; transition:transform 0.08s, opacity 0.08s; }
 .hero .date { font-size:2.4rem; font-weight:800; letter-spacing:-1px; transition:transform 0.08s, opacity 0.08s; }
 
 #release-text { font-size:1.1rem; opacity:0.55; margin-top:-8px; transition:transform 0.08s, opacity 0.08s; }
-
-img { width:200px; filter:drop-shadow(0 0 50px rgba(255,255,255,0.12)); transition: transform 0.05s ease-out; }
 
 .countdown { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
 .unit { min-width:90px; padding:16px 18px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.03); transition:transform 0.05s; }
@@ -35,24 +43,23 @@ img { width:200px; filter:drop-shadow(0 0 50px rgba(255,255,255,0.12)); transiti
 .tick { animation: tick 0.22s ease-out; }
 @keyframes tick { from { transform:translateY(4px); opacity:0.6; } to { transform:translateY(0); opacity:1; } }
 
-#volume-container { position:fixed; bottom:20px; right:20px; width:150px; height:8px; background:rgba(255,255,255,0.2); border-radius:4px; cursor:pointer; }
+#volume-container { position:fixed; bottom:20px; right:20px; width:150px; height:8px; background:rgba(255,255,255,0.2); border-radius:4px; cursor:pointer; z-index:2; }
 #volume-bar { height:100%; width:50%; background:#fff; border-radius:4px; transition:width 0.1s; }
 
-@media (max-width:600px) { .value{ font-size:1.8rem; } .unit{ min-width:70px; } .hero .date{ font-size:1.6rem; } #release-text{ font-size:0.95rem; } }
+@media (max-width:600px) { .value{ font-size:1.8rem; } .unit{ min-width:70px; } .hero .date{ font-size:1.6rem; } #release-text{ font-size:0.95rem; } #hero-img{ width:300px; } }
 </style>
 </head>
 
 <body>
-<div class="container">
+<img id="hero-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5R4-Tcrz_B60IzMELDlZ5PJIMUaKXE0uQBw&s" alt="">
 
+<div class="container">
     <div class="hero">
         <div class="ye">YE</div>
         <div class="date">JANUARY 30</div>
     </div>
 
     <div id="release-text">Releases in 0 days, 0 hours, 0 minutes, 0 seconds</div>
-
-    <img id="hero-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5R4-Tcrz_B60IzMELDlZ5PJIMUaKXE0uQBw&s" alt="">
 
     <div class="countdown">
         <div class="unit">
@@ -72,7 +79,6 @@ img { width:200px; filter:drop-shadow(0 0 50px rgba(255,255,255,0.12)); transiti
             <div class="label">Seconds</div>
         </div>
     </div>
-
 </div>
 
 <audio id="bgm" loop>
@@ -118,7 +124,7 @@ function update(id,value){
 updateCountdown();
 setInterval(updateCountdown,1000);
 
-// --- Audio + Full Visualizer ---
+// --- Audio Visualizer ---
 const audio=document.getElementById("bgm");
 audio.volume=0.5;
 const img=document.getElementById("hero-img");
@@ -144,7 +150,6 @@ function initAudio(){
         requestAnimationFrame(animate);
         analyser.getByteFrequencyData(dataArray);
 
-        // Bass & loudness
         let bass=0;
         for(let i=0;i<25;i++) bass+=dataArray[i];
         bass=bass/25/255;
@@ -153,25 +158,24 @@ function initAudio(){
         for(let i=0;i<dataArray.length;i++) loudness+=dataArray[i];
         loudness=loudness/dataArray.length/255;
 
-        // Total multiplier
-        const scale=1+bass*1.5+loudness*0.6; // max pulse
+        const scale=1+bass*1.5+loudness*0.6;
         const shakeX=(Math.random()-0.5)*bass*12;
         const shakeY=(Math.random()-0.5)*bass*12;
 
-        // Hero image
-        img.style.transform=`scale(${scale}) rotate(${bass*20}deg) translate(${shakeX}px, ${shakeY}px)`;
+        // Background hero image
+        img.style.transform=`scale(${1+scale*0.3}) translate(${shakeX}px, ${shakeY}px)`;
 
-        // Countdown units react
+        // Countdown units
         [daysEl,hoursEl,minutesEl,secondsEl].forEach(el=>{
             const unitScale=1+scale*0.25;
             el.parentElement.style.transform=`scale(${unitScale}) translate(${shakeX/4}px, ${shakeY/4}px)`;
         });
 
-        // Release text reacts
+        // Release text
         releaseText.style.transform=`scale(${1+scale*0.15}) translate(${shakeX/2}px, ${shakeY/2}px)`;
         releaseText.style.opacity=`${0.5+scale*0.5}`;
 
-        // YE / Date text react
+        // YE / Date text
         yeEl.style.transform=`scale(${1+scale*0.1}) translate(${shakeX/3}px, ${shakeY/3}px)`;
         yeEl.style.opacity=`${0.4+scale*0.6}`;
         dateEl.style.transform=`scale(${1+scale*0.1}) translate(${shakeX/3}px, ${shakeY/3}px)`;
@@ -180,7 +184,7 @@ function initAudio(){
     animate();
 }
 
-// --- Volume Bar ---
+// Volume Bar
 const volContainer=document.getElementById("volume-container");
 const volBar=document.getElementById("volume-bar");
 volContainer.addEventListener("click",e=>{
@@ -190,7 +194,7 @@ volContainer.addEventListener("click",e=>{
     volBar.style.width=perc*100+"%";
 });
 
-// --- Start Audio ---
+// Start Audio
 function startAudio(){
     if(audioCtx) return;
     audio.play();
