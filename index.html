@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#fff;min-height:100vh;display:grid;place-items:center;font-family:'Inter',sans-serif;overflow:hidden;position:relative}
 body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
-#hero-img{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 0 50px rgba(255,255,255,0.12));width:200px;pointer-events:none;z-index:0;transition: transform 0.05s ease-out}
+#hero-img{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 0 50px rgba(255,255,255,0.12));width:200px;pointer-events:none;z-index:0;transition:transform 0.05s ease-out}
 .container{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:32px}
 .hero{display:flex;flex-direction:column;gap:6px}
 .hero .ye{font-size:0.85rem;letter-spacing:6px;opacity:0.55;transition:transform 0.08s,opacity 0.08s}
@@ -23,8 +23,8 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 .tick{animation:tick 0.22s ease-out}
 @keyframes tick{from{transform:translateY(4px);opacity:0.6}to{transform:translateY(0);opacity:1}}
 #volume-container{position:fixed;bottom:20px;right:20px;width:150px;height:8px;background:rgba(255,255,255,0.2);border-radius:4px;cursor:pointer;z-index:2}
-#volume-bar{height:100%;width:50%;background:#fff;border-radius:4px;transition:width 0.05s}
-@media (max-width:600px){.value{font-size:1.8rem}.unit{min-width:70px}.hero .date{font-size:1.6rem}#release-text{font-size:0.95rem}#hero-img{width:300px}}
+#volume-bar{height:100%;width:50%;background:#fff;border-radius:4px;transition:width 0.05s;pointer-events:none}
+@media (max-width:600px){.value{font-size:1.8rem}.unit{min-width:70px}.hero .date{font-size:1.6rem}#release-text{font-size:0.95rem}#hero-img{width:150px}}
 </style>
 </head>
 <body>
@@ -37,7 +37,7 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
     <div id="release-text">Releases in 0 days, 0 hours, 0 minutes, 0 seconds</div>
     <div class="countdown">
         <div class="unit"><div class="value" id="days">0</div><div class="label">Days</div></div>
-        <div class="unit"><div class="value" id="hours">00</div><div class="label">Hour</div></div>
+        <div class="unit"><div class="value" id="hours">00</div><div class="label">Hours</div></div>
         <div class="unit"><div class="value" id="minutes">00</div><div class="label">Minutes</div></div>
         <div class="unit"><div class="value" id="seconds">00</div><div class="label">Seconds</div></div>
     </div>
@@ -45,93 +45,123 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 <audio id="bgm" loop><source src="./BULLY.mp3" type="audio/mpeg"></audio>
 <div id="volume-container"><div id="volume-bar"></div></div>
 <script>
-const releaseDate=new Date(2026,0,30,0,0,0)
-const last={}
-const releaseText=document.getElementById("release-text")
+const releaseDate=new Date(2026,0,30,0,0,0);
+const last={};
+const releaseText=document.getElementById("release-text");
 function updateCountdown(){
-    const now=new Date()
-    const diff=releaseDate-now
-    if(diff<=0){releaseText.textContent="Released!";update("days",0);update("hours",0);update("minutes",0);update("seconds",0);return}
-    const days=Math.floor(diff/86400000)
-    const hours=Math.floor(diff/3600000)%24
-    const minutes=Math.floor(diff/60000)%60
-    const seconds=Math.floor(diff/1000)%60
-    update("days",days)
-    update("hours",String(hours).padStart(2,"0"))
-    update("minutes",String(minutes).padStart(2,"0"))
-    update("seconds",String(seconds).padStart(2,"0"))
-    releaseText.textContent=`Releases in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`
+    const now=new Date();
+    const diff=releaseDate-now;
+    if(diff<=0){
+        releaseText.textContent="Released!";
+        update("days",0);update("hours",0);update("minutes",0);update("seconds",0);
+        return;
+    }
+    const days=Math.floor(diff/86400000);
+    const hours=Math.floor(diff/3600000)%24;
+    const minutes=Math.floor(diff/60000)%60;
+    const seconds=Math.floor(diff/1000)%60;
+    update("days",days);
+    update("hours",String(hours).padStart(2,"0"));
+    update("minutes",String(minutes).padStart(2,"0"));
+    update("seconds",String(seconds).padStart(2,"0"));
+    releaseText.textContent=`Releases in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
 }
 function update(id,value){
-    const el=document.getElementById(id)
-    if(last[id]!==value){el.textContent=value;el.classList.remove("tick");void el.offsetWidth;el.classList.add("tick");last[id]=value}
-}
-updateCountdown()
-setInterval(updateCountdown,1000)
-const audio=document.getElementById("bgm")
-audio.volume=0.5
-const img=document.getElementById("hero-img")
-let audioCtx,analyser,source,dataArray
-function initAudio(){
-    audioCtx=new(window.AudioContext||window.webkitAudioContext)()
-    analyser=audioCtx.createAnalyser()
-    source=audioCtx.createMediaElementSource(audio)
-    source.connect(analyser)
-    analyser.connect(audioCtx.destination)
-    analyser.fftSize=1024
-    dataArray=new Uint8Array(analyser.frequencyBinCount)
-    const daysEl=document.getElementById("days")
-    const hoursEl=document.getElementById("hours")
-    const minutesEl=document.getElementById("minutes")
-    const secondsEl=document.getElementById("seconds")
-    const yeEl=document.querySelector(".ye")
-    const dateEl=document.querySelector(".date")
-    function animate(){
-        requestAnimationFrame(animate)
-        analyser.getByteFrequencyData(dataArray)
-        let bass=0
-        for(let i=0;i<50;i++) bass+=dataArray[i]
-        bass=bass/50/255
-        let loudness=0
-        for(let i=0;i<dataArray.length;i++) loudness+=dataArray[i]
-        loudness=loudness/dataArray.length/255
-        const scale=1+bass*2+loudness*0.6
-        const shakeX=(Math.random()-0.5)*bass*15
-        const shakeY=(Math.random()-0.5)*bass*15
-        img.style.transform=`scale(${1+scale*0.35}) translate(${shakeX}px, ${shakeY}px)`
-        [daysEl,hoursEl,minutesEl,secondsEl].forEach(el=>{
-            const unitScale=1+scale*0.25
-            el.parentElement.style.transform=`scale(${unitScale}) translate(${shakeX/4}px, ${shakeY/4}px)`
-        })
-        releaseText.style.transform=`scale(${1+scale*0.15}) translate(${shakeX/2}px, ${shakeY/2}px)`
-        releaseText.style.opacity=`${0.5+scale*0.5}`
-        yeEl.style.transform=`scale(${1+scale*0.1}) translate(${shakeX/3}px, ${shakeY/3}px)`
-        yeEl.style.opacity=`${0.4+scale*0.6}`
-        dateEl.style.transform=`scale(${1+scale*0.1}) translate(${shakeX/3}px, ${shakeY/3}px)`
-        dateEl.style.opacity=`${0.5+scale*0.5}`
+    const el=document.getElementById(id);
+    if(last[id]!==value){
+        el.textContent=value;
+        el.classList.remove("tick");
+        void el.offsetWidth;
+        el.classList.add("tick");
+        last[id]=value;
     }
-    animate()
 }
-const volContainer=document.getElementById("volume-container")
-const volBar=document.getElementById("volume-bar")
-let dragging=false
-function updateVolume(e){
-    const rect=volContainer.getBoundingClientRect()
-    const perc=Math.min(Math.max((e.clientX-rect.left)/rect.width,0),1)
-    audio.volume=perc
-    volBar.style.width=perc*100+"%"
+updateCountdown();
+setInterval(updateCountdown,1000);
+const audio=document.getElementById("bgm");
+audio.volume=0.5;
+const img=document.getElementById("hero-img");
+let audioCtx,analyser,source,dataArray;
+function initAudio(){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    analyser=audioCtx.createAnalyser();
+    source=audioCtx.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    analyser.fftSize=1024;
+    dataArray=new Uint8Array(analyser.frequencyBinCount);
+    const daysEl=document.getElementById("days");
+    const hoursEl=document.getElementById("hours");
+    const minutesEl=document.getElementById("minutes");
+    const secondsEl=document.getElementById("seconds");
+    const yeEl=document.querySelector(".ye");
+    const dateEl=document.querySelector(".date");
+    function animate(){
+        requestAnimationFrame(animate);
+        analyser.getByteFrequencyData(dataArray);
+        let bass=0;
+        for(let i=0;i<40;i++)bass+=dataArray[i];
+        bass=bass/40/255;
+        let loudness=0;
+        for(let i=0;i<dataArray.length;i++)loudness+=dataArray[i];
+        loudness=loudness/dataArray.length/255;
+        const scale=1+bass*2+loudness*0.8;
+        const shakeX=(Math.random()-0.5)*bass*15;
+        const shakeY=(Math.random()-0.5)*bass*15;
+        img.style.transform=`translate(-50%,-50%) scale(${scale}) rotate(${bass*25}deg)`;
+        [daysEl,hoursEl,minutesEl,secondsEl].forEach(el=>{
+            const unitScale=1+scale*0.3;
+            el.parentElement.style.transform=`scale(${unitScale}) translate(${shakeX/4}px,${shakeY/4}px)`;
+        });
+        releaseText.style.transform=`scale(${1+scale*0.2}) translate(${shakeX/2}px,${shakeY/2}px)`;
+        releaseText.style.opacity=`${0.5+scale*0.5}`;
+        yeEl.style.transform=`scale(${1+scale*0.15}) translate(${shakeX/3}px,${shakeY/3}px)`;
+        yeEl.style.opacity=`${0.4+scale*0.6}`;
+        dateEl.style.transform=`scale(${1+scale*0.15}) translate(${shakeX/3}px,${shakeY/3}px)`;
+        dateEl.style.opacity=`${0.5+scale*0.5}`;
+    }
+    animate();
 }
-volContainer.addEventListener("mousedown",()=>dragging=true)
-document.addEventListener("mouseup",()=>dragging=false)
-document.addEventListener("mousemove",e=>{if(dragging)updateVolume(e)})
-volContainer.addEventListener("click",updateVolume)
+const volContainer=document.getElementById("volume-container");
+const volBar=document.getElementById("volume-bar");
+function setVolume(e){
+    const rect=volContainer.getBoundingClientRect();
+    const perc=Math.min(Math.max((e.clientX-rect.left)/rect.width,0),1);
+    audio.volume=perc;
+    volBar.style.width=perc*100+"%";
+}
+let dragging=false;
+volContainer.addEventListener("mousedown",e=>{
+    dragging=true;
+    setVolume(e);
+});
+document.addEventListener("mousemove",e=>{
+    if(dragging)setVolume(e);
+});
+document.addEventListener("mouseup",()=>{
+    dragging=false;
+});
+volContainer.addEventListener("touchstart",e=>{
+    dragging=true;
+    const touch=e.touches[0];
+    setVolume(touch);
+});
+document.addEventListener("touchmove",e=>{
+    if(dragging){
+        const touch=e.touches[0];
+        setVolume(touch);
+    }
+});
+document.addEventListener("touchend",()=>{
+    dragging=false;
+});
 function startAudio(){
-    if(audioCtx)return
-    audio.play()
-    initAudio()
+    if(audioCtx)return;
+    audio.play();
+    initAudio();
 }
-document.body.addEventListener("click",startAudio,{once:true})
-document.body.addEventListener("touchstart",startAudio,{once:true})
+document.body.addEventListener("click",startAudio,{once:true});
+document.body.addEventListener("touchstart",startAudio,{once:true});
 </script>
 </body>
 </html>
