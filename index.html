@@ -2,168 +2,507 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>YE — January 30</title>
+<title>YE — March 20</title>
 <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5R4-Tcrz_B60IzMELDlZ5PJIMUaKXE0uQBw&s" type="image/png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;800&family=JetBrains+Mono:wght@500&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;min-height:100vh;display:grid;place-items:center;font-family:'Inter',sans-serif;overflow:hidden;position:relative}
-body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
-#hero-img{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 0 50px rgba(255,255,255,0.12));width:200px;pointer-events:none;z-index:0;transition:transform 0.05s ease-out}
-.container{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:32px}
-.hero{display:flex;flex-direction:column;gap:6px}
-.hero .ye{font-size:0.85rem;letter-spacing:6px;opacity:0.55;transition:transform 0.08s,opacity 0.08s}
-.hero .date{font-size:2.4rem;font-weight:800;letter-spacing:-1px;transition:transform 0.08s,opacity 0.08s}
-#release-text{font-size:1.1rem;opacity:0.55;margin-top:-8px;transition:transform 0.08s,opacity 0.08s}
-.countdown{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:10px}
-.unit{min-width:90px;padding:16px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);transition:transform 0.05s}
-.value{font-family:'JetBrains Mono',monospace;font-size:2.4rem;font-weight:500;transition:transform 0.05s}
-.label{margin-top:6px;font-size:0.65rem;letter-spacing:2.5px;opacity:0.55;transition:transform 0.05s,opacity 0.05s,letter-spacing 0.05s}
-.tick{animation:tick 0.22s ease-out}
-@keyframes tick{from{transform:translateY(4px);opacity:0.6}to{transform:translateY(0);opacity:1}}
-#volume-container{position:fixed;bottom:20px;right:20px;width:150px;height:8px;background:rgba(255,255,255,0.2);border-radius:4px;cursor:pointer;z-index:2}
-#volume-bar{height:100%;width:50%;background:#fff;border-radius:4px;transition:width 0.05s;pointer-events:none}
-@media (max-width:600px){.value{font-size:1.8rem}.unit{min-width:70px}.hero .date{font-size:1.6rem}#release-text{font-size:0.95rem}#hero-img{width:150px}}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600;900&family=JetBrains+Mono:wght@700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #000;
+    color: #fff;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Blurred background image */
+body::before {
+    content: "";
+    position: fixed;
+    inset: -20px;
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5R4-Tcrz_B60IzMELDlZ5PJIMUaKXE0uQBw&s");
+    background-size: cover;
+    background-position: center;
+    filter: blur(40px) brightness(0.3);
+    z-index: 0;
+    transform: scale(1.1);
+}
+
+/* Vignette overlay */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Animated grain texture */
+.grain {
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.6;
+    animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -10%); }
+    30% { transform: translate(3%, -15%); }
+    50% { transform: translate(-10%, 5%); }
+    70% { transform: translate(8%, 10%); }
+    90% { transform: translate(-3%, -8%); }
+}
+
+.container {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    padding: 40px 20px;
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-shadow: 0 0 60px rgba(255,255,255,0.3);
+}
+
+.hero .ye {
+    font-size: 1.2rem;
+    letter-spacing: 12px;
+    font-weight: 600;
+    opacity: 0.9;
+    text-transform: uppercase;
+    transition: all 0.1s;
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
+}
+
+.hero .date {
+    font-size: 4rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    transition: all 0.1s;
+    background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(255,255,255,0.4));
+}
+
+#release-text {
+    font-size: 1.3rem;
+    opacity: 0.75;
+    margin-top: -24px;
+    transition: all 0.1s;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 30px rgba(255,255,255,0.4);
+}
+
+.countdown {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.unit {
+    min-width: 120px;
+    padding: 28px 24px;
+    border-radius: 20px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    transition: all 0.1s;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.unit:hover {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-4px);
+}
+
+.value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.5rem;
+    font-weight: 700;
+    transition: all 0.1s;
+    text-shadow: 0 0 40px rgba(255,255,255,0.6);
+}
+
+.label {
+    margin-top: 12px;
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    opacity: 0.7;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: all 0.1s;
+}
+
+.tick {
+    animation: tick 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes tick {
+    0% {
+        transform: scale(1.2) translateY(6px);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Pulsing glow effect */
+@keyframes pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 20px rgba(255,255,255,0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 40px rgba(255,255,255,0.6));
+    }
+}
+
+.hero .date {
+    animation: pulse 3s ease-in-out infinite;
+}
+
+/* Volume control */
+#volume-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 180px;
+    height: 12px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 10;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    transition: all 0.3s;
+}
+
+#volume-container:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+#volume-bar {
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(90deg, #fff 0%, #ddd 100%);
+    border-radius: 6px;
+    transition: width 0.1s;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+/* Audio indicator */
+.audio-indicator {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    font-size: 0.8rem;
+    opacity: 0.6;
+    z-index: 10;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: opacity 0.3s;
+}
+
+.audio-indicator:hover {
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero .date {
+        font-size: 2.5rem;
+    }
+    
+    .hero .ye {
+        font-size: 1rem;
+        letter-spacing: 8px;
+    }
+    
+    #release-text {
+        font-size: 1rem;
+    }
+    
+    .value {
+        font-size: 2.5rem;
+    }
+    
+    .unit {
+        min-width: 90px;
+        padding: 20px 16px;
+    }
+    
+    .countdown {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero .date {
+        font-size: 2rem;
+    }
+    
+    .value {
+        font-size: 2rem;
+    }
+    
+    .unit {
+        min-width: 70px;
+        padding: 16px 12px;
+    }
+    
+    #volume-container {
+        width: 120px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
 </style>
 </head>
 <body>
-<img id="hero-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5R4-Tcrz_B60IzMELDlZ5PJIMUaKXE0uQBw&s" alt="">
+<div class="grain"></div>
 <div class="container">
     <div class="hero">
         <div class="ye">YE</div>
-        <div class="date">JANUARY 30</div>
+        <div class="date">MARCH 20</div>
     </div>
     <div id="release-text">Releases in 0 days, 0 hours, 0 minutes, 0 seconds</div>
     <div class="countdown">
-        <div class="unit"><div class="value" id="days">0</div><div class="label">Days</div></div>
-        <div class="unit"><div class="value" id="hours">00</div><div class="label">Hours</div></div>
-        <div class="unit"><div class="value" id="minutes">00</div><div class="label">Minutes</div></div>
-        <div class="unit"><div class="value" id="seconds">00</div><div class="label">Seconds</div></div>
+        <div class="unit">
+            <div class="value" id="days">0</div>
+            <div class="label">Days</div>
+        </div>
+        <div class="unit">
+            <div class="value" id="hours">00</div>
+            <div class="label">Hours</div>
+        </div>
+        <div class="unit">
+            <div class="value" id="minutes">00</div>
+            <div class="label">Minutes</div>
+        </div>
+        <div class="unit">
+            <div class="value" id="seconds">00</div>
+            <div class="label">Seconds</div>
+        </div>
     </div>
 </div>
-<audio id="bgm" loop><source src="./BULLY.mp3" type="audio/mpeg"></audio>
-<div id="volume-container"><div id="volume-bar"></div></div>
+
+<audio id="bgm" loop>
+    <source src="./BULLY.mp3" type="audio/mpeg">
+</audio>
+
+<div class="audio-indicator">Click to enable audio</div>
+<div id="volume-container">
+    <div id="volume-bar"></div>
+</div>
+
 <script>
-const releaseDate=new Date(2026,0,30,0,0,0);
-const last={};
-const releaseText=document.getElementById("release-text");
-function updateCountdown(){
-    const now=new Date();
-    const diff=releaseDate-now;
-    if(diff<=0){
-        releaseText.textContent="Released!";
-        update("days",0);update("hours",0);update("minutes",0);update("seconds",0);
+const releaseDate = new Date(2026, 2, 20, 0, 0, 0); // March 20, 2026
+const last = {};
+const releaseText = document.getElementById("release-text");
+
+function updateCountdown() {
+    const now = new Date();
+    const diff = releaseDate - now;
+    
+    if (diff <= 0) {
+        releaseText.textContent = "RELEASED!";
+        update("days", 0);
+        update("hours", 0);
+        update("minutes", 0);
+        update("seconds", 0);
         return;
     }
-    const days=Math.floor(diff/86400000);
-    const hours=Math.floor(diff/3600000)%24;
-    const minutes=Math.floor(diff/60000)%60;
-    const seconds=Math.floor(diff/1000)%60;
-    update("days",days);
-    update("hours",String(hours).padStart(2,"0"));
-    update("minutes",String(minutes).padStart(2,"0"));
-    update("seconds",String(seconds).padStart(2,"0"));
-    releaseText.textContent=`Releases in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor(diff / 3600000) % 24;
+    const minutes = Math.floor(diff / 60000) % 60;
+    const seconds = Math.floor(diff / 1000) % 60;
+    
+    update("days", days);
+    update("hours", String(hours).padStart(2, "0"));
+    update("minutes", String(minutes).padStart(2, "0"));
+    update("seconds", String(seconds).padStart(2, "0"));
+    
+    releaseText.textContent = `Releases in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
 }
-function update(id,value){
-    const el=document.getElementById(id);
-    if(last[id]!==value){
-        el.textContent=value;
+
+function update(id, value) {
+    const el = document.getElementById(id);
+    if (last[id] !== value) {
+        el.textContent = value;
         el.classList.remove("tick");
         void el.offsetWidth;
         el.classList.add("tick");
-        last[id]=value;
+        last[id] = value;
     }
 }
+
 updateCountdown();
-setInterval(updateCountdown,1000);
-const audio=document.getElementById("bgm");
-audio.volume=0.5;
-const img=document.getElementById("hero-img");
-let audioCtx,analyser,source,dataArray;
-function initAudio(){
-    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    analyser=audioCtx.createAnalyser();
-    source=audioCtx.createMediaElementSource(audio);
+setInterval(updateCountdown, 1000);
+
+// Audio visualization
+const audio = document.getElementById("bgm");
+audio.volume = 0.5;
+
+let audioCtx, analyser, source, dataArray;
+
+function initAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    source = audioCtx.createMediaElementSource(audio);
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
-    analyser.fftSize=1024;
-    dataArray=new Uint8Array(analyser.frequencyBinCount);
-    const daysEl=document.getElementById("days");
-    const hoursEl=document.getElementById("hours");
-    const minutesEl=document.getElementById("minutes");
-    const secondsEl=document.getElementById("seconds");
-    const yeEl=document.querySelector(".ye");
-    const dateEl=document.querySelector(".date");
-    function animate(){
+    analyser.fftSize = 2048;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    
+    const daysEl = document.getElementById("days");
+    const hoursEl = document.getElementById("hours");
+    const minutesEl = document.getElementById("minutes");
+    const secondsEl = document.getElementById("seconds");
+    const yeEl = document.querySelector(".ye");
+    const dateEl = document.querySelector(".date");
+    const indicator = document.querySelector(".audio-indicator");
+    
+    indicator.textContent = "Audio playing";
+    
+    function animate() {
         requestAnimationFrame(animate);
         analyser.getByteFrequencyData(dataArray);
-        let bass=0;
-        for(let i=0;i<40;i++)bass+=dataArray[i];
-        bass=bass/40/255;
-        let loudness=0;
-        for(let i=0;i<dataArray.length;i++)loudness+=dataArray[i];
-        loudness=loudness/dataArray.length/255;
-        const scale=1+bass*2+loudness*0.8;
-        const shakeX=(Math.random()-0.5)*bass*15;
-        const shakeY=(Math.random()-0.5)*bass*15;
-        img.style.transform=`translate(-50%,-50%) scale(${scale}) rotate(${bass*25}deg)`;
-        [daysEl,hoursEl,minutesEl,secondsEl].forEach(el=>{
-            const unitScale=1+scale*0.3;
-            el.parentElement.style.transform=`scale(${unitScale}) translate(${shakeX/4}px,${shakeY/4}px)`;
-            const label=el.nextElementSibling;
-            if(label)label.style.letterSpacing=`${2.5+bass*8}px`;
+        
+        // Bass frequencies
+        let bass = 0;
+        for (let i = 0; i < 60; i++) bass += dataArray[i];
+        bass = bass / 60 / 255;
+        
+        // Mid frequencies
+        let mid = 0;
+        for (let i = 60; i < 200; i++) mid += dataArray[i];
+        mid = mid / 140 / 255;
+        
+        // Overall loudness
+        let loudness = 0;
+        for (let i = 0; i < dataArray.length; i++) loudness += dataArray[i];
+        loudness = loudness / dataArray.length / 255;
+        
+        const intensity = bass * 1.5 + mid * 0.8 + loudness * 0.5;
+        
+        // Shake effect
+        const shakeX = (Math.random() - 0.5) * bass * 20;
+        const shakeY = (Math.random() - 0.5) * bass * 20;
+        
+        // Apply effects to countdown units
+        [daysEl, hoursEl, minutesEl, secondsEl].forEach((el, index) => {
+            const unitScale = 1 + intensity * 0.15;
+            const delay = index * 0.02;
+            el.parentElement.style.transform = `scale(${unitScale}) translate(${shakeX * (0.3 + delay)}px, ${shakeY * (0.3 + delay)}px)`;
+            
+            const label = el.nextElementSibling;
+            if (label) {
+                label.style.letterSpacing = `${4 + bass * 6}px`;
+                label.style.opacity = `${0.7 + intensity * 0.3}`;
+            }
         });
-        releaseText.style.transform=`scale(${1+scale*0.2}) translate(${shakeX/2}px,${shakeY/2}px)`;
-        releaseText.style.opacity=`${0.5+scale*0.5}`;
-        yeEl.style.transform=`scale(${1+scale*0.15}) translate(${shakeX/3}px,${shakeY/3}px)`;
-        yeEl.style.opacity=`${0.4+scale*0.6}`;
-        dateEl.style.transform=`scale(${1+scale*0.15}) translate(${shakeX/3}px,${shakeY/3}px)`;
-        dateEl.style.opacity=`${0.5+scale*0.5}`;
+        
+        // Text effects
+        releaseText.style.transform = `scale(${1 + intensity * 0.12}) translate(${shakeX * 0.4}px, ${shakeY * 0.4}px)`;
+        releaseText.style.opacity = `${0.75 + intensity * 0.25}`;
+        
+        yeEl.style.transform = `scale(${1 + intensity * 0.1}) translate(${shakeX * 0.3}px, ${shakeY * 0.3}px)`;
+        yeEl.style.opacity = `${0.9 + intensity * 0.1}`;
+        
+        dateEl.style.transform = `scale(${1 + intensity * 0.08})`;
     }
+    
     animate();
 }
-const volContainer=document.getElementById("volume-container");
-const volBar=document.getElementById("volume-bar");
-function setVolume(e){
-    const rect=volContainer.getBoundingClientRect();
-    const perc=Math.min(Math.max((e.clientX-rect.left)/rect.width,0),1);
-    audio.volume=perc;
-    volBar.style.width=perc*100+"%";
+
+// Volume control
+const volContainer = document.getElementById("volume-container");
+const volBar = document.getElementById("volume-bar");
+
+function setVolume(e) {
+    const rect = volContainer.getBoundingClientRect();
+    const perc = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+    audio.volume = perc;
+    volBar.style.width = perc * 100 + "%";
 }
-let dragging=false;
-volContainer.addEventListener("mousedown",e=>{
-    dragging=true;
+
+let dragging = false;
+
+volContainer.addEventListener("mousedown", e => {
+    dragging = true;
     setVolume(e);
 });
-document.addEventListener("mousemove",e=>{
-    if(dragging)setVolume(e);
+
+document.addEventListener("mousemove", e => {
+    if (dragging) setVolume(e);
 });
-document.addEventListener("mouseup",()=>{
-    dragging=false;
+
+document.addEventListener("mouseup", () => {
+    dragging = false;
 });
-volContainer.addEventListener("touchstart",e=>{
-    dragging=true;
-    const touch=e.touches[0];
+
+volContainer.addEventListener("touchstart", e => {
+    dragging = true;
+    const touch = e.touches[0];
     setVolume(touch);
 });
-document.addEventListener("touchmove",e=>{
-    if(dragging){
-        const touch=e.touches[0];
+
+document.addEventListener("touchmove", e => {
+    if (dragging) {
+        const touch = e.touches[0];
         setVolume(touch);
     }
 });
-document.addEventListener("touchend",()=>{
-    dragging=false;
+
+document.addEventListener("touchend", () => {
+    dragging = false;
 });
-function startAudio(){
-    if(audioCtx)return;
+
+// Start audio on user interaction
+function startAudio() {
+    if (audioCtx) return;
     audio.play();
     initAudio();
 }
-document.body.addEventListener("click",startAudio,{once:true});
-document.body.addEventListener("touchstart",startAudio,{once:true});
+
+document.body.addEventListener("click", startAudio, { once: true });
+document.body.addEventListener("touchstart", startAudio, { once: true });
 </script>
 </body>
 </html>
