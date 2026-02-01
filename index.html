@@ -35,7 +35,6 @@ body::before {
     background-position: center;
     filter: blur(40px) brightness(0.3);
     z-index: 0;
-    transform: scale(1.1);
 }
 
 /* Vignette overlay */
@@ -325,7 +324,7 @@ body::after {
     <source src="./BULLY.mp3" type="audio/mpeg">
 </audio>
 
-<div class="audio-indicator">Click to enable audio</div>
+<div class="audio-indicator">Audio enabled</div>
 <div id="volume-container">
     <div id="volume-bar"></div>
 </div>
@@ -396,9 +395,6 @@ function initAudio() {
     const secondsEl = document.getElementById("seconds");
     const yeEl = document.querySelector(".ye");
     const dateEl = document.querySelector(".date");
-    const indicator = document.querySelector(".audio-indicator");
-    
-    indicator.textContent = "Audio playing";
     
     function animate() {
         requestAnimationFrame(animate);
@@ -497,12 +493,18 @@ document.addEventListener("touchend", () => {
 // Start audio on user interaction
 function startAudio() {
     if (audioCtx) return;
-    audio.play();
+    audio.play().catch(() => {
+        // Fallback: if autoplay is blocked, wait for user interaction
+        document.body.addEventListener("click", () => {
+            audio.play();
+            initAudio();
+        }, { once: true });
+    });
     initAudio();
 }
 
-document.body.addEventListener("click", startAudio, { once: true });
-document.body.addEventListener("touchstart", startAudio, { once: true });
+// Try to autoplay immediately
+startAudio();
 </script>
 </body>
 </html>
